@@ -1,31 +1,31 @@
-name: Build Minecraft Plugin
-
-on:
-  push:
-    branches: [ "main", "master" ]
-  pull_request:
-    branches: [ "main", "master" ]
-
+name: Final Build
+on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: maven
+      - name: Build Manually
+        run: |
+          # Скачиваем API напрямую через системную ссылку
+          curl -L "https://spigotmc.org" -o spigot-api.jar
+          # Компилируем
+          mkdir -p out
+          javac -cp spigot-api.jar src/main/java/net/chatbubbles/LightChatBubbles.java -d out
+          # Копируем конфиг
+          cp src/main/resources/plugin.yml out/
+          # Собираем JAR
+          cd out
+          jar cvf ../LightChatBubbles.jar *
 
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
-
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: LightChatBubbles-Plugin
-        path: target/*.jar
+      - name: Upload Result
+        uses: actions/upload-artifact@v4
+        with:
+          name: Final-Plugin-Jar
+          path: LightChatBubbles.jar
