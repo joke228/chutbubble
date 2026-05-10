@@ -1,4 +1,4 @@
-name: Ultimate Search Build
+name: Real Java Build
 on: [push]
 jobs:
   build:
@@ -11,27 +11,19 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Locate and Build
+      - name: Compile and Pack
         run: |
-          # Ищем файлы, где бы они ни были
-          JAVA_FILE=$(find . -name "LightChatBubbles.java" | head -n 1)
-          PLUGIN_FILE=$(find . -name "plugin.yml" | head -n 1)
-          
-          echo "Found Java at: $JAVA_FILE"
-          echo "Found Plugin at: $PLUGIN_FILE"
-          
-          mkdir -p out/net/chatbubbles
-          
-          # Копируем их в правильную структуру для JAR
-          cp "$JAVA_FILE" out/net/chatbubbles/
-          cp "$PLUGIN_FILE" out/
-          
-          # Собираем
+          # Скачиваем API через проверенное зеркало
+          curl -sL https://github.com -o spigot.jar
+          mkdir -p out
+          # Компилируем по-настоящему
+          javac -cp spigot.jar src/main/java/net/chatbubbles/LightChatBubbles.java -d out
+          cp src/main/resources/plugin.yml out/
           cd out
           jar cvf ../LightChatBubbles.jar *
 
-      - name: Upload Result
+      - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: Final-Plugin-Jar
+          name: Working-Plugin
           path: LightChatBubbles.jar
