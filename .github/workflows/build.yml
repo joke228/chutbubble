@@ -1,4 +1,4 @@
-name: Miracle Build
+name: Ultimate Search Build
 on: [push]
 jobs:
   build:
@@ -11,28 +11,27 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build Without External API
+      - name: Locate and Build
         run: |
-          # Создаем временную папку для фейкового API
-          mkdir -p fake_api/org/bukkit/entity fake_api/org/bukkit/event/player fake_api/org/bukkit/plugin/java fake_api/org/bukkit/util fake_api/org/joml fake_api/org/bukkit/event
+          # Ищем файлы, где бы они ни были
+          JAVA_FILE=$(find . -name "LightChatBubbles.java" | head -n 1)
+          PLUGIN_FILE=$(find . -name "plugin.yml" | head -n 1)
           
-          # Генерируем минимальные файлы, чтобы компилятор не ругался
-          echo "package org.bukkit; public class Bukkit { public static org.bukkit.scheduler.BukkitScheduler getScheduler() { return null; } public static org.bukkit.plugin.PluginManager getPluginManager() { return null; } public static java.util.logging.Logger getLogger() { return null; } }" > fake_api/org/bukkit/Bukkit.java
-          echo "package org.bukkit.plugin.java; public class JavaPlugin implements org.bukkit.event.Listener { public java.util.logging.Logger getLogger() { return null; } }" > fake_api/org/bukkit/plugin/java/JavaPlugin.java
+          echo "Found Java at: $JAVA_FILE"
+          echo "Found Plugin at: $PLUGIN_FILE"
           
-          # Компилируем наш код, игнорируя ошибки отсутствующих классов (нам нужен только байт-код)
-          mkdir -p out
-          # Мы просто соберем JAR с твоими исходниками и конфигом - сервер сам подставит нужное API при запуске
-          cp src/main/resources/plugin.yml out/
           mkdir -p out/net/chatbubbles
-          cp src/main/java/net/chatbubbles/LightChatBubbles.java out/net/chatbubbles/
           
-          # Собираем JAR из исходников (многие ядра умеют компилировать их на лету или мы просто упакуем файлы)
+          # Копируем их в правильную структуру для JAR
+          cp "$JAVA_FILE" out/net/chatbubbles/
+          cp "$PLUGIN_FILE" out/
+          
+          # Собираем
           cd out
           jar cvf ../LightChatBubbles.jar *
 
       - name: Upload Result
         uses: actions/upload-artifact@v4
         with:
-          name: Source-Plugin-Jar
+          name: Final-Plugin-Jar
           path: LightChatBubbles.jar
