@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="Convenient file sharing. Registration is not required. Large files are supported.">
+        <meta name="author" content="Espen Braastad">
+        <link rel="icon" href="/static/img/favicon.png">
+        <link rel="stylesheet" href="/static/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="/static/css/fontawesome.all.min.css"/>
+        <link rel="stylesheet" href="/static/css/custom.css"/>
+        <title>Filebin</title>
+        <script src="/static/js/filebin2.js"></script>
+        <script>
+            window.onload = function () {
+                if (typeof FileReader == "undefined") alert ("Your browser \
+                    is not supported. You will need to use a \
+                    browser with File API support to upload files.");
+                var fileCount = document.getElementById("fileCount");
+                var fileList = document.getElementById("fileList");
+                var fileDrop = document.getElementById("fileDrop");
+                var fileField = document.getElementById("fileField");
+                var bin = "ijwk0ny0j8cucac0";
+                var binURL = "/ijwk0ny0j8cucac0";
+                FileAPI = new FileAPI(
+                    fileCount,
+                    fileList,
+                    fileDrop,
+                    fileField,
+                    bin,
+                    binURL
+                );
+                FileAPI.init();
+                
+                fileDrop.ondrop = FileAPI.uploadQueue;
+                
+                if (fileField) {
+                    fileField.addEventListener("change", FileAPI.uploadQueue)
+                }
+            }
+        </script>
+    </head>
+    <body class="container-xl">
+
+        
+
+        
+
+
+<nav class="navbar navbar-expand-sm navbar-light d-flex justify-content-between align-items-start">
+    <div>
+        <ul class="navbar-nav">
+	    
+            
+        </ul>
+    </div>
+    <div class="text-right">
+        <ul class="navbar-nav">
+	    
+        </ul>
+    </div>
+</nav>
+
+
+
+
+
+<div class="modal fade" id="modalTakedown" tabindex="-1" role="dialog" aria-labelledby="modalTakedownTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header alert-secondary">
+                <h5 class="modal-title" id="modalTakedownTitle">Takedown</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Filebin provides functionality for clients to upload and download files.</p>
+
+                <p>There is an opportunity to abuse this to share illegal, copyrighted or malicious content, even though this is against the <a href="/terms">Terms and conditions</a>. There is no automatic moderation of such content, but anyone familiar with the location of the files can delete them at their own will.</p>
+
+                <p>If this bin contains files that should not be here, please <a href="#" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#modalDeleteBin">delete the bin</a>. This will immediately make the files unavailable, and is faster than sending a takedown request to the service owner.</p>
+
+                <p>If you need to contact the service owner, please reach out at contact@filebin.net.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#modalDeleteBin">
+                    <i class="fas fa-fw fa-trash-alt"></i> Delete bin
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+        <h1 class="display-1">Filebin</h1>
+
+        
+        <p class="lead">
+            Convenient file sharing in three steps without
+            registration.
+        </p>
+
+        
+
+        <p class="lead pt-1">
+            <strong class="mt-2 pe-2"><span class="rounded-pill bg-secondary btn btn-sm text-light" style="width: 2rem; height:2rem;">1</span></strong>
+            <br class="mobile-break">
+            <span class="fileUpload btn btn-primary mt-2 mb-2"><label>Select files to upload<input type="file" class="upload" id="fileField" multiple></label></span> or <em>drag-and-drop</em> files into this browser window.
+        </p>
+        <p class="lead">
+            <strong class="mt-2 pe-2"><span class="rounded-pill bg-secondary btn btn-sm text-light" style="width: 2rem; height:2rem;">2</span></strong>
+            <br class="mobile-break">
+            <span>The file uploads will begin. Wait until they complete.</span>
+        </p>
+
+        
+        <span id="fileCount"></span>
+
+        
+        <span id="fileDrop"></span>
+
+        
+        <span id="fileList"></span>
+
+        <p class="lead">
+            <strong class="mt-2 pe-2"><span class="rounded-pill bg-secondary btn btn-sm text-light" style="width: 2rem; height:2rem;">3</span></strong>
+            <br class="mobile-break">
+            <span>The files will be available at <a rel="nofollow" href="https://filebin.net/ijwk0ny0j8cucac0">https://filebin.net/ijwk0ny0j8cucac0</a> which is a link you can share.</span>
+        </p>
+
+        <p class="pt-2 text-muted">
+            <em>
+                The file uploads will cancel if you move away from this page before they complete. Uploaded files can be deleted manually at any time and will in any case be deleted automatically 6 days from now.
+            </em>
+        </p>
+
+        
+<nav class="navbar navbar-expand-sm navbar-light small">
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" href="/about">About</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/api">API documentation</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/contact">Contact</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/privacy">Privacy</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/terms">Terms and conditions</a>
+        </li>
+    </ul>
+</nav>
+
+
+        
+        <div class="modal fade" id="modalStorageLimit" tabindex="-1" role="dialog" aria-labelledby="modalStorageLimitTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header alert-secondary">
+                        <h5 class="modal-title" id="modalStorageLimitTitle">Storage capacity reached</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="lead">What is this?</p>
+                        <p>This service has a storage capacity limit in place. When overall usage is above this limit, new file uploads will be rejected until usage is below the limit again.</p>
+
+                        <p class="lead">How to get below the limit?</p>
+                        <p>Usage is reduced as files uploaded earlier are deleted. Files are deleted after a period of time after being uploaded, which is an automatic and continuous process. In addition, usage is reduced whenever existing files are manually deleted which users can do at any time.</p>
+
+                        <p class="lead">What to do now?</p>
+                        <p>If you need to upload files and the storage capacity is reached, check back soon again. Maybe then usage is below the limit and new file uploads will be accepted.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+        <script src="/static/js/popper.min.js"></script>
+        <script src="/static/js/bootstrap.min.js"></script>
+    </body>
+</html>
