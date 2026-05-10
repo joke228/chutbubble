@@ -12,31 +12,31 @@ jobs:
           distribution: 'temurin'
       - name: Compile Without External JAR
         run: |
-          # Создаем структуру фейкового API
-          mkdir -p fake/org/bukkit/entity fake/org/bukkit/event/player fake/org/bukkit/plugin/java fake/org/bukkit/util fake/org/joml fake/org/bukkit/event
-          
-          # Генерируем минимальный код библиотек, чтобы компилятор пропустил наш код
+          mkdir -p fake/org/bukkit/entity fake/org/bukkit/event/player fake/org/bukkit/plugin/java fake/org/bukkit/util fake/org/joml fake/org/bukkit/event fake/org/bukkit/plugin fake/org/bukkit/scheduler
+
+          # Генерируем исправленные файлы API
+          echo "package org.bukkit.util; public class Transformation { public org.joml.Vector3f getScale() { return null; } }" > fake/org/bukkit/util/Transformation.java
+          echo "package org.bukkit.scheduler; public interface BukkitScheduler { int scheduleSyncRepeatingTask(org.bukkit.plugin.Plugin(java.Plugin p, Runnable r, long d, long p2); void cancelTask(int id); }" > fake/org/bukkit/scheduler/BukkitScheduler.java
+          echo "package org.bukkit.plugin; public interface PluginManager { void registerEvents(org.bukkit.event.Listener l, org.bukkit.plugin.Plugin p); }" > fake/org/bukkit/plugin/PluginManager.java
+          echo "package org.bukkit.plugin; public interface Plugin { java.util.logging.Logger getLogger(); }" > fake/org/bukkit/plugin/Plugin.java
           echo "package org.bukkit; public class Bukkit { public static org.bukkit.scheduler.BukkitScheduler getScheduler() { return null; } public static org.bukkit.plugin.PluginManager getPluginManager() { return null; } public static java.util.logging.Logger getLogger() { return null; } }" > fake/org/bukkit/Bukkit.java
-          echo "package org.bukkit.plugin.java; public class JavaPlugin { public java.util.logging.Logger getLogger() { return null; } }" > fake/org/bukkit/plugin/java/JavaPlugin.java
+          echo "package org.bukkit.plugin.java; public abstract class JavaPlugin implements org.bukkit.plugin.Plugin, org.bukkit.event.Listener { public java.util.logging.Logger getLogger() { return null; } }" > fake/org/bukkit/plugin/java/JavaPlugin.java
           echo "package org.bukkit.event; public interface Listener {}" > fake/org/bukkit/event/Listener.java
-          echo "package org.bukkit.entity; public interface Player extends org.bukkit.entity.Entity {}" > fake/org/bukkit/entity/Player.java
           echo "package org.bukkit.entity; public interface Entity { void remove(); boolean isDead(); boolean isValid(); org.bukkit.Location getLocation(); boolean teleport(org.bukkit.Location l); }" > fake/org/bukkit/entity/Entity.java
-          echo "package org.bukkit.entity; public interface TextDisplay extends Entity { void setText(String t); void setBillboard(Billboard b); void setBackgroundColor(org.bukkit.Color c); void setShadowed(boolean s); Transformation getTransformation(); void setTransformation(Transformation t); enum Billboard { CENTER } }" > fake/org/bukkit/entity/TextDisplay.java
+          echo "package org.bukkit.entity; import org.bukkit.util.Transformation; public interface TextDisplay extends Entity { void setText(String t); void setBillboard(Billboard b); void setBackgroundColor(org.bukkit.Color c); void setShadowed(boolean s); Transformation getTransformation(); void setTransformation(Transformation t); enum Billboard { CENTER } }" > fake/org/bukkit/entity/TextDisplay.java
+          echo "package org.bukkit.entity; public interface Player extends Entity {}" > fake/org/bukkit/entity/Player.java
           echo "package org.bukkit.event.player; public class AsyncPlayerChatEvent extends org.bukkit.event.Event { public org.bukkit.entity.Player getPlayer() { return null; } public String getMessage() { return null; } }" > fake/org/bukkit/event/player/AsyncPlayerChatEvent.java
           echo "package org.bukkit.event; public abstract class Event { }" > fake/org/bukkit/event/Event.java
-          echo "package org.bukkit.event; public enum EventPriority { HIGHEST } " > fake/org/bukkit/event/EventPriority.java
+          echo "package org.bukkit.event; public enum EventPriority { HIGHEST, NORMAL } " > fake/org/bukkit/event/EventPriority.java
           echo "package org.bukkit; public class Color { public static Color fromARGB(int a, int r, int g, int b) { return null; } }" > fake/org/bukkit/Color.java
           echo "package org.bukkit; public class Location { public Location add(double x, double y, double z) { return this; } }" > fake/org/bukkit/Location.java
-          echo "package org.bukkit.util; public class Transformation { public org.joml.Vector3f getScale() { return null; } }" > fake/org/bukkit/util/Transformation.java
           echo "package org.joml; public class Vector3f { public void set(float x, float y, float z) {} public Vector3f(float x, float y, float z) {} }" > fake/org/joml/Vector3f.java
           echo "package org.bukkit.event; public @interface EventHandler { EventPriority priority() default EventPriority.NORMAL; boolean ignoreCancelled() default false; }" > fake/org/bukkit/event/EventHandler.java
 
-          # Сначала компилируем фейки, потом наш плагин
+          # Сборка
           mkdir -p bin
           javac $(find fake -name "*.java") -d bin
           javac -cp bin src/main/java/net/chatbubbles/LightChatBubbles.java -d bin
-          
-          # Упаковываем
           cp src/main/resources/plugin.yml bin/
           cd bin
           jar cvf ../LightChatBubbles.jar .
