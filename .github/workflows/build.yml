@@ -1,29 +1,29 @@
-name: Real Java Build
+name: Final Functional Build
 on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up JDK 17
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-
-      - name: Compile and Pack
+      - name: Build Plugin
         run: |
-          # Скачиваем API через проверенное зеркало
-          curl -sL https://github.com -o spigot.jar
-          mkdir -p out
-          # Компилируем по-настоящему
-          javac -cp spigot.jar src/main/java/net/chatbubbles/LightChatBubbles.java -d out
-          cp src/main/resources/plugin.yml out/
-          cd out
-          jar cvf ../LightChatBubbles.jar *
-
+          # Скачиваем API напрямую с проверенного зеркала
+          curl -L "https://github.com" -o spigot.jar
+          mkdir -p bin
+          # Компилируем твой код
+          javac -cp spigot.jar src/main/java/net/chatbubbles/LightChatBubbles.java -d bin
+          # Копируем паспорт плагина
+          cp src/main/resources/plugin.yml bin/
+          # Создаем финальный JAR
+          cd bin
+          jar cvf ../LightChatBubbles-Final.jar *
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
           name: Working-Plugin
-          path: LightChatBubbles.jar
+          path: LightChatBubbles-Final.jar
